@@ -1,0 +1,78 @@
+Question: You have to find in how many ways can we select a pair of students such that both students are from different clubs.
+
+Input: 
+            0        2         4
+            |        |         | \
+            |        |         |  \
+	    |        |         |   \
+	    |        |         |    \
+            1        3         5-----6
+
+   Clubs we have [[0,1],[2,3],[4,5,6]] We have 3 clubs
+                   c1    c2      c3
+    c1    c2     2x2 = 4
+    c1    c3     2x3 = 6
+    c2    c3     2x3 = 6
+      
+Output: 4+6+6 = 16 ans 
+
+Solution:
+
+ class Solution {
+          static class Edge{
+             int src;
+             int nbr;
+ 
+           Edge(int u, int v){
+               this.src=u;
+               this.nbr=v;
+            }
+         }
+ 
+        public int validPath(int n, int[][] edges, int source, int destination) {
+  
+             ArrayList<Edge>[] graph = new ArrayList[n];
+  
+              for(int i=0;i<n;i++){
+                 graph[i] = new ArrayList<Edge>();
+              }
+             for(int i=0;i<edges.length;i++){
+                  graph[edges[i][0]].add(new Edge(edges[i][0],edges[i][1]));
+                  graph[edges[i][1]].add(new Edge(edges[i][1],edges[i][0]));
+             }
+             boolean[] visited=new boolean[n];
+            ArrayList<ArrayList<Integer>> comps =new ArrayList<>();
+  
+             for(int i=0;i<n;i++){
+                   if(visited[i]==false{
+                           ArrayList<Integer> comp=new ArrayList<>();
+                           pathExist(graph,source,visited,comp);
+                           comps.add(comp);
+                   }
+             }
+            
+   	     int pairs= 0;
+
+	     for(int i=0;i<comps.size();i++){  // This loop is counting pairs. 
+			for(int j=i+1;j<comps.size();j++){
+                                int count= comps.get(i).size() * comps.get(j).size();
+  				pairs+=count;
+                       }
+		}
+
+              return pairs;
+    }
+ 
+      public void  pathExist(ArrayList<Edge>[] graph, int src,boolean[] visited, ArrayList<Integer> comp){
+  
+            visited[src] = true;
+            comp.add(src);
+ 
+            for(Edge edge: graph[src]){
+                if(visited[edge.nbr]==false){
+                    pathExist(graph, edge.nbr, visited, comp);
+                 }
+            }
+ 
+          }
+    }

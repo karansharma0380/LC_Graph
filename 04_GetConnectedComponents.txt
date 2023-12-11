@@ -1,0 +1,69 @@
+Question: We have different components of the graph, we have to add the list of list vertices/nodes. 
+
+Input:- 
+
+		0        3        4
+                |        |        | \
+                |        |        |  \
+                |        |        |   \
+                |        |        |    \
+                1        2        5-----6
+
+Output:  [[0,1],[3,2],[4,5,6]]
+
+Solution:
+
+
+
+
+class Solution {
+       static class Edge{
+         int src;
+         int nbr;
+ 
+         Edge(int u, int v){
+             this.src=u;
+             this.nbr=v;
+         }
+      }
+ 
+      public ArrayList<ArrayList<Integer>> validPath(int n, int[][] edges, int source, int destination) {
+ 
+ 
+         ArrayList<Edge>[] graph = new ArrayList[n];
+ 
+          for(int i=0;i<n;i++){
+             graph[i] = new ArrayList<Edge>();
+          }
+         for(int i=0;i<edges.length;i++){
+             graph[edges[i][0]].add(new Edge(edges[i][0],edges[i][1]));
+              graph[edges[i][1]].add(new Edge(edges[i][1],edges[i][0]));
+          }
+          boolean[] visited=new boolean[n];
+         ArrayList<ArrayList<Integer>> comps =new ArrayList<>();
+
+	  for(int i=0;i<n;i++){
+		if(visited[i]==false{
+			ArrayList<Integer> comp=new ArrayList<>();
+                        pathExist(graph,source,visited,comp);
+			comps.add(comp);
+                }
+          }
+          return comps;
+ }
+ 
+ 
+     boolean pathExist(ArrayList<Edge>[] graph, int src,boolean[] visited, ArrayList<Integer> comp){
+ 
+         visited[src] = true;
+         comp.add(src);
+
+         for(Edge edge: graph[src]){
+             if(visited[edge.nbr]==false){
+                 pathExist(graph, edge.nbr, visited, comp);
+              }
+          }
+ 
+       }
+  }
+

@@ -1,0 +1,9 @@
+
+Hamiltonian Path: A Hamiltonian path in a graph is a path that visits every vertex exactly once. If such a path exists in a graph,
+                  it is called a Hamiltonian path. In other words, you start at one vertex, visit every other vertex exactly once,
+                  and end up at a different vertex.
+
+Ham. Cycle: A Hamiltonian cycle is a special case of a Hamiltonian path where the last vertex in the path is adjacent to the first
+             one, forming a closed loop.
+
+
