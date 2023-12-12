@@ -1,0 +1,42 @@
+							Breadth First Search
+
+Just keep in mind this order  r m* w a*  -> remove, mark star, work, add star. We also need a Queue for just like we did in the trees.
+
+static class Pair{
+	int v;
+	String psf;
+
+	Edge(int v, String psf){
+		this.v=v;
+		this.psf=psf
+	}
+	
+}
+
+psvm(){
+	ArrayDeque<Pair> q =new ArrayDeque<>();
+	q.add(new Pair(src,src+" "));
+	boolean[] visited = new boolean[vtces];
+
+	while(q.isEmpty()==false){
+		// r m* w a*
+		Pair rem=q.removeFirst(); // remove
+	
+		if(visited[rem.v]==true){ //mark star if not already marked
+		 	continue;         // star is this block
+		} 
+		visited[rem.v]=true;
+
+		System.out.println(rem.v +"@" + rem.psf); // work
+
+		for(Edge e:graph[rem.v]){ // add star if not already added
+			if(visited[edge.nbr]==false){ // this is statement is star
+				q.add(new Pair(e.nbr,rem.psf+edge.nbr));
+			}
+		}
+	}
+
+}
+
+
+

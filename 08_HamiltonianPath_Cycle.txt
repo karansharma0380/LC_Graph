@@ -4,6 +4,42 @@ Hamiltonian Path: A Hamiltonian path in a graph is a path that visits every vert
                   and end up at a different vertex.
 
 Ham. Cycle: A Hamiltonian cycle is a special case of a Hamiltonian path where the last vertex in the path is adjacent to the first
-             one, forming a closed loop.
+             one, forming a closed loop. Means there is a direct edge between the starting vertex and the last vertex.
 
+
+Solution: This is exact same as printAllPath, only change is in the base case. 
+	
+	HashSet<Integer> visited= new HashSet<>();
+  Function call will be lke hamiltonian(graph, src, visited, src+"",src);
+ 														  newly added for cycle check
+  public static void hamiltonian(ArrayList<ArrayList<Edge>> graph, int src, HashSet<Integer> visited, String psf, int original_src){
+	if(visited.size()==graph.length-1){ // Why? Coz before adding the node to the hashset it added to the psf. see the func call.
+		System.out.print(psf);
+		
+		boolean closingEdgeFound=false;
+		for(Edge edge:graph[src]){  // Checking the neighbors of the lat node in our chain
+			if(edge.nbr==original_src){
+				closingEdgeFound=true;
+				break;
+			}
+		}
+
+		if(closingEdgeFound== true){
+			System.out.println("*");
+		}
+		else{
+			System.out.println(".");
+		}
+	
+		return; 	
+	}
+
+	visited.add(src);
+	for(Edge edge: graph[src]){
+		if(visited.contains(edge.nbr)==false){
+			hamiltonian(gaph, edge.nbr,visited,psf+edge.nbr);
+		}
+	}
+	visited.remove(src);
+   }
 
