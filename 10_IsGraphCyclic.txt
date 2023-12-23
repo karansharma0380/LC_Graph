@@ -1,0 +1,76 @@
+ Question: Is the give graph cyclic or not?
+
+input: 
+              0          3          4
+              |          |          | \
+              |          |          |  \
+              |          |          |   \
+	      |          |          |    \
+ 	      1          2          5-----6
+
+output: true
+
+
+Solution:  we can do this using both DFS and BFS with just minor variation.
+
+
+psvm(){
+	
+	boolean[] visited = new boolean[n];
+	boolean ans1 = dfs(graph, src,visited, -1);
+        boolean ans2 = bfs(graph, src, visited);
+
+	for(int v=0;v<vtces;v++){
+		if(visited[v]==false){
+			boolean cycle = bfs(graph, v, visited);
+			if(cycle){
+				Sout(true);
+				return; 
+			}
+		}
+	}
+
+	Sout(false);
+}  
+
+Let's see the DFS approach.
+public static boolean dfs(ArrayList<Edge>[] graph, int src, boolean[] visited,int prev){
+	if(src==prev){
+		return true;
+	}	
+
+	visted[src]=true;
+        
+        for(Edge edge:graph[src]){
+		if(visited[edge.nbr]==false){
+			if(dfs(graph,edge.nbr,visited, src)){
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+Let's see the BFS approach. 
+public static boolean bfs(ArrayList<Edge>[] graph, int src, boolean[] visited){
+	ArrayDeque<Pair> q = new ArrayDeque<>();
+	q.add(new Pair(src,src+""));
+ 
+        while(q.isEmpty()==false){
+		Pair rem=q.removeFirst();
+
+		if(visited[rem.v]==true){
+			return true; //This is the only change
+		}
+		visited[rem.v] =true;
+
+		for(Edge edge:graph[rem.v]){
+			if(visited[e.nbr]==false){
+				q.add(new Pair(e.nbr,rem.psf+edge.nbr));
+			}
+		}
+	
+	}
+
+	return false;		
+}

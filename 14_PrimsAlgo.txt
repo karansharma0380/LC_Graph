@@ -1,0 +1,79 @@
+Minimum Spanning Tree :- 1. It is a subgraph
+			 2. This is subgraph is a tree(Connected Acyclic).
+			 3. This subgraph should be spanning(all vertices should be there).
+For a graph there can be many subgraphs. that subgraph which has least edge weight sum is the min. spanning tree.
+Note: This algorithm is not good for edges with negative weight. For that there is Bellman Ford Algorithm.
+Lang for this questions be like connect all the computers with less length wire.
+
+Soln: 
+
+class Solution{
+	public static class Edge{
+		int v;
+		int nbr;
+		int wt;
+
+		public Edge(int v, int nbr, int wt){
+			this.v=v;
+			this.nbr=nbr;
+			this.wt=wt;
+		}
+	}
+
+	public static class Pair implements Comparable<Pair>{
+		int v;
+		int av;
+		int wt;
+
+		Pair(int v, int av, int wt){
+			this.v=v;
+			this.av=av;
+			this.wt=wt;
+		}
+
+		public int compareTo(Pair o){
+			return this.wt-o.wt;
+		}
+	}
+
+
+	psvm{
+		//Graph building code first
+		
+		PriorityQueue<Pair> pq = new PriorityQueue<>();
+		pq.add(new Pair(0,-1,0));
+		boolean[] visited = new boolean[vtces];
+
+		while(pq.isEmpty()==false){
+			// r m* w a*
+		
+			Pair rem = pq.remove(); //remove
+			
+			if(visited[rem.v]==true){ // mark star
+				continue;
+			}
+			visited[rem.v]=true;
+
+			Sout(rem.v+" acquired from "+rem.av+"with weight"+rem.wt); // work
+			
+			for(Edge e: graph[rem.v]){ // add star step
+				if(visited[e.nbr]==false){
+					pq.add(new Pair(e.nbr,rem.v,e.wt)); // Note we are not cumulating the sum of the weight. 
+				} // Here it is different that he dijkstra algorithm. 
+			}
+			
+		}
+	}
+}    
+
+
+
+
+
+
+
+
+
+
+
+

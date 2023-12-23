@@ -1,0 +1,91 @@
+Topological Sort: A permutation of vertices for a directed acyclic graph is called topological sort if for directed edges uv,
+			u appears before v in the graph. 
+
+
+		0---->3<----4                   4  This is the permutation/order of uv in which u appears before v.
+		|     ^     | \			5 
+		|     |     |  \		6
+		|     |     |   \		0
+	       \/     |    \/   \/		1
+		1---->2     5--->6		2
+						3
+
+Soln: 
+
+we will do simple dfs on every vtces[covering all the component] when we reach a node with no neighbor we will add that to a stack,
+that is in the postorder. 
+But why not just print in the postorder? 
+    why store inside the stack in postorder?
+    why not print in the preorder?
+
+class Solution{
+	public static class Edge{
+		int src;
+		int nbr;
+		int wt;
+
+		Edge(int src, int nbr, int wt){
+			this.src=src;
+			this.nbr=nbr;
+			this.wt=wt;
+		}
+	}
+
+	public static void dfs(ArrayList<Edge>[] graph, int src, boolean[] visited, Stack<Integer> stck){
+		
+		visited[src]=true;
+		for(Edge e:graph[src]){
+			if(visited[e.nbr]==false){
+				dfs(graph,e.nbr,visited, stck);
+			}
+		}
+	
+		stck.push(src);
+	}
+
+	psvm{
+		// Code for building graph
+		
+		boolean[] visited = new boolean[vtces];
+		Stack<Integer> stck = new Stack<>(); 
+		for(int v=0;v<vtces;v++){
+			dfs(graph,v,visited,stck);
+		}
+
+		while(stck.isEmpty==false){
+			Sout(stck.pop());
+		}
+
+		
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

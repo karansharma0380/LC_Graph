@@ -1,0 +1,116 @@
+								Bipartite Graph
+
+A bipartite graph is a graph whose vertices can be divided into two disjoint sets (often called "partitions" or "color classes") such
+ that every edge
+connects a vertex from one set to a vertex in the other set. In other words, there are no edges that connect vertices within the same set.
+
+eg.              0--------3
+		 |        |
+		 |        |         [0,2]   [1,3] TWO SETS 
+	         |        |
+		 1--------2   
+
+Another example
+   
+                 4
+		 | \
+		 |  \        Not possible to divide vertices into 2 parts. 
+		 |   \                       [4]    [5,6]   X
+		 |    \                      [4,5]  [6]     X
+		 5-----6
+
+Solution:  If a graph is non cyclic means it is Bipartite graph.
+
+	   If graph is cyclic then if the cycle length is even then it is Bipartite.
+	   If graph is cyclic then if the cycle length is odd then it is not Bipartite.
+	
+	   Note: If a single component in the graph is non Bipartite the whole graph is non-bipartite.
+ 	   e.g.   
+		  0     2       4
+ 		  |     |      | \
+	          |     |      |  \       First, Second components are Bipartite, Third one is not.
+	          |     |      |   \      So, graph is not Bipartite graph. 
+	          |     |      |    \
+		  1     3      5-----6
+ 
+
+Consider the 1 and 2 graph even&odd cycle, if we run BFS on the even cycle graph, then we will get this
+					0|0|0[node, psf,level]
+				       /      \
+				 1|01|1       3|03|1
+				/                  \
+			      2|012|2               2|032|2       We have this on the same level 
+
+If we consider graph with odd cycle
+					4|4|0
+				       /     \
+				 5|45|1      6|46|1
+				/
+				6|456|2             We have same node at 2 different levels. 
+       
+So, We can develop a solution using BFS whenver the current level of the node is not equal to the old level then we can say that the 
+cycle was odd length. But question arises, how can we track the prev level of the node. So, for that we will utilize the visited[] 
+array, instead of making it a boolean[] make it an int[] array. Fill it with -1, and put the current level in it.
+
+static class Pair{
+	int level;
+	String psf;
+	int v;
+
+	public Pair(int v, String psf, int level){
+		this.v=v;
+		this.psf=psf;
+		this.level=level;
+	}
+}
+
+public void hamiltonion(){
+	
+	int[] visited = new int[vtces];
+	for(int i=0;i<vtces;i++){ // filing the array with -1 flag
+		visited[i]=-1;//using a flag
+	}
+	
+	for(int v=0;v<vtces;v++){ //Checking every component of the graph to be the Bipartite coz if even if one component is not a
+		if(visited[v]==-1){	// bipartite then whole graph is not a bipartite. 
+			boolean ans = BFS(graph, v,visited);
+			if(ans==false){
+				Sout("False");
+				return;
+			}
+		}
+	}
+
+	Sout(true);
+}
+public boolean BFS(ArrayList<Edge>[] graph, int src, int[] boolean){
+	ArrayDeque<Pair> q=new ArrayDeque<>();
+	q.add(new Pair(src,src+"",0));
+
+	while(q.isEmpty==false){
+		// r m* w a*
+		Pair rem=q.removeFirst();// r
+
+		if(visited[rem.v]!=-1){  // m* step, also this means that this node is already visited and we want to check the level,
+					// for deciding whether this is a bipartite graph or not
+			if(rem.level!=visted[rem.v]){
+				return false; // means not a bipartite graph.
+			}
+		}
+		else{
+			visited[rem.v]=level;
+		}
+
+		// no work
+
+		for(Edge edge: graph[rem.v]){
+			if(visited[edge.nbr]==-1){
+				q.add(new Pair(edge.nbr,rem.psf+edge.nbr,rem.level+1));
+			}
+		}
+	}
+
+	return true;
+}
+  
+

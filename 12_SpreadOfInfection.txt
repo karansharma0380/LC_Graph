@@ -1,0 +1,12 @@
+Ques: We are given a graph, representing people and their connectivity. You are also givena src person[who got infected] at 
+time t. Find how many peoeple will get infected in time t, if the infection spreads to neighbors of infected person in 1 unit time.
+
+                0------3----4
+	        |      |    | \
+	        |      |    |  \
+	        |      |    |   \
+		1------2    5----6
+
+
+
+Sol:  

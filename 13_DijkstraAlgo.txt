@@ -1,0 +1,72 @@
+Given a weighted graph and a source vertex in the graph, find the shortest paths from the source to all the other vertices in the
+ given graph.
+
+Note:- The given graph does not contain any negative edge. For negative edges BellmanFord. 
+	If you want the shortest path in terms of edges BFS is your goTo.
+
+Supose we have this graph....
+
+		    40     2
+		0--------3-----4
+		|        |    | \              Shortest path for e.g. 0 to 6 interms of weight-> 0123456
+		|        |    |  \             Shortest path in term of edges -> 0346
+	    10  |      10|   3|   \ 8
+		|        |    |    \
+		1--------2    5-----6
+		    10           3
+
+This algorithm is exactly BFS, only is change is that we will use PriorityQueue instead of the normal Queue.
+
+class Solution{
+
+	public static class Edge{
+		int v;
+		int nbr;
+		int wt;
+		
+		Edge(int v, int nbr, int wt){
+			this.v=v;
+			this.nbr=nbr;
+			this.wt=wt;
+		}
+	}
+	
+	public static class Pair implements Comparable<Pair>{
+		int v;
+		String psf;
+		int wsf;
+
+		Pair(int v, String psf; int wsf){
+			this.v=v;
+			this.psf=psf;
+			this.wsf=wsf;
+		}
+
+		public int compareTo(Pair o){
+			return this.wsf-o.wsf;
+		}
+	}
+
+	public static void dijkstra(ArrayList<Edge>[] graph, int src, boolean[] visted){
+		PriorityQueue<Pair> q = new PriorityQueue<>();
+		q.add(new Pair(src,src+"",0));
+
+		while(q.isEmpty()==false){
+			Pair rem = q.remove();  //remove
+
+			if(visited[rem.v]==true){  // m*
+				continue;
+			}
+			visted[rem.v]=true;
+
+			Sout(rem.v+""+rem.psf+""rem.wsf);// w
+			
+			for(Edge edge:graph[rem.v]){
+				if(visited[edge.nbr]==false){
+					q.add(new Pair(edge.nbr,rem.psf+edge.nbr,rem.wsf+edge.wt));
+				}
+			}
+		}
+	}
+}
+
