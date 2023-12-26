@@ -1,0 +1,102 @@
+Leetcode 694[Premium] 
+
+Question: You are given an m x n binary matrix grid. An island is a group of 1's (representing land) connected 4-directionally 
+          (horizontal or vertical.) You may assume all four edges of the grid are surrounded by water.
+An island is considered to be the same as another if and only if one island can be translated (and not rotated or reflected) to
+equal the other. Return the number of distinct islands.
+
+Input: grid = [[1,1,0,0,0],[1,1,0,0,0],[0,0,0,1,1],[0,0,0,1,1]]
+Output: 1
+
+Input: grid = [[1,1,0,1,1],[1,0,0,0,0],[0,0,0,0,1],[1,1,0,1,1]]
+Output: 3
+
+
+Soln: 
+Idea: To get the pattern of the component in string and then store it to hashset becuase hashset will not stre the duplicate
+	hash and we can get the distant count. 
+	In the pattern that we are storing in the hashset we are adding the backtracking step as 'z' otherwise, we have two
+	different looking component with same pattern counting as one. e.g
+	1 1  and 1 1 both have the pattern 'xrd' which is wrong so we added the backtracking step'z' as well.
+	1          1
+	xrzdz    xrdzz   now both the component have different pattern and can be counted separately.
+
+       [1,1,0,0,0]
+       [1,1,0,0,0]
+       [0,0,0,1,1]
+       [0,0,0,1,1]
+   
+class Solution{
+	
+	static StringBuilder psf;
+	public static int numDist(int[][] arr){
+		
+		HashSet<String> set= new Hashset<>();
+		for(int i=0;i<grid.length;i++){
+			for(int j=0;j<grid[0].length;j++){
+				if(arr[i][j]==1){
+					psf = new StringBuilder();
+					psf.append("x");
+					dfs(arr, i,j);
+
+					set.add(psf.toString());
+				}
+			}	
+		}
+		return set.size();
+	}
+
+	public static void dfs(int[][] grid, int row, int col){
+		
+		grid[row][col]=0;
+		if(row-1>=0 && grid[row-1][col]==1){
+			psf.append("u");
+			dfs(grid,row-1,col);
+		}
+
+		if(col+1<=grid[0].length-1 && grid[row][col+1]==1){
+			psf.append("r");
+			dfs(grid,row, col+1);
+		}
+		if(row+1<=grid.length-1 && grid[row+1][col]==1){
+			psf.append("d");
+			dfs(grid,row+1,col);
+		}
+		if(col-1>=0 && grid[row-1][col-1]==1){
+			psf.append("l");
+			dfs(grid,row,col-1);
+		}
+
+		psf.append("z");
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

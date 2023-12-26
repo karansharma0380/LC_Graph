@@ -1,0 +1,100 @@
+Leetcode 994 Rotten Oranges https://leetcode.com/problems/rotting-oranges/
+[This is Multisource BFS]
+
+Ques: You are given an m x n grid where each cell can have one of three values:
+	0 representing an empty cell,
+	1 representing a fresh orange, or
+	2 representing a rotten orange.
+
+      Every minute, any fresh orange that is 4-directionally adjacent to a rotten orange becomes rotten. 
+      Return the minimum number of minutes that must elapse until no cell has a fresh orange. If this is impossible, 
+      return -1.
+
+      Input: grid = [[2,1,1],[1,1,0],[0,1,1]]
+      Output: 4
+
+      Input: grid = [[2,1,1],[0,1,1],[1,0,1]]
+      Output: -1
+      Explanation: The orange in the bottom left corner (row 2, column 0) is never rotten, because rotting only
+      happens 4-directionally.
+
+Soln: In this we will add all the positions of 2's in the queue, and simultaneously count the 1's just to cover the edge case.
+	And then run the BFS. And when we find a '1' we will convert it to 0 and add its position to the queue. 
+
+	At last we will check for the count of fresh oranges. 
+
+
+class Solution {
+    static class Pair{
+        int x;
+        int y;
+
+        Pair(int x, int y){
+            this.x=x;
+            this.y=y;
+        }
+    }
+    public int orangesRotting(int[][] grid) {
+        ArrayDeque<Pair> q = new ArrayDeque<>();
+        int fresh=0;
+        for(int i=0;i<grid.length;i++){
+            for(int j=0;j<grid[0].length;j++){
+                if(grid[i][j]==2){
+                    q.add(new Pair(i,j));
+                }
+                else if(grid[i][j]==1){
+                    fresh++;
+                }
+            }
+        }
+        if(fresh==0){
+            return 0;
+        }
+
+        int[][] dirs = {{0,1},
+                        {1,0},
+                        {0,-1},
+                        {-1,0}};
+
+        int level=-1;
+
+        while(q.isEmpty()==false){
+            int size=q.size();
+            level++;
+
+            while(size-->0){
+                Pair rem=q.remove();
+
+                for(int i=0;i<4;i++){
+                    int rowdash = rem.x + dirs[i][0];
+                    int coldash = rem.y + dirs[i][1];
+
+                    if(rowdash >=0 && coldash>=0 && rowdash<grid.length && coldash<grid[0].length&&
+                      grid[rowdash][coldash]==1){
+                        grid[rowdash][coldash]=0;
+                        q.add(new Pair(rowdash,coldash));
+                        fresh--;
+                    }
+                }
+            }
+        }
+
+        if(fresh==0){
+            return level;
+        }
+        else{
+            return -1;
+        }
+    }
+}
+
+This BFS include an additional element for tracking levels.
+Level Tracking: The variable int level = -1; is initialized before the main while loop, and level is incremented for each level of 
+                the BFS traversal. 
+		This is a way of keeping track of the depth or level of each node in the BFS traversal. It can be useful in scenarios
+		where you need to know the distance of each node from the starting node.
+
+Inner While Loop for Current Level: The outer while loop continues until the queue q is empty, representing the entire BFS traversal.
+				    The inner while loop (while(size-- > 0)) iterates through all the nodes at the current level.
+				    This ensures that all nodes at the current level are processed before moving on to the next level.
+

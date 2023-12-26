@@ -1,0 +1,87 @@
+Leetcode542-> 01 Matrix-> https://leetcode.com/problems/01-matrix/
+
+Ques: Given an m x n binary matrix mat, return the distance of the nearest 0 for each cell. The distance between two
+      adjacent cells is 1.
+
+  Input: mat = [[0,0,0],[0,1,0],[0,0,0]]
+  Output: [[0,0,0],[0,1,0],[0,0,0]]
+
+  Input: mat = [[0,0,0],[0,1,0],[1,1,1]]
+  Output: [[0,0,0],[0,1,0],[1,2,1]]
+
+Soln: 
+                  0 0 0        0 0 0   
+		  0 1 0  ->    0 1 0
+		  1 1 1        1 2 1
+
+	Sol1 -> we run BFS every time we find a '1' coz BFS grows in radius and we can easily find nearest '0' using
+		level technique i.e. nearest zero on which level we can add it to the matrix.
+		T.C.->             # of 1's * O(V+E)[TC of BFS].
+
+	Sol2 -> This approach is efficient. We will loop through the matrix, add the pos(i,j) of '0's to the
+		queue and convert 1 to -1. 
+			0   0  0 
+			0  -1  0
+		       -1  -1 -1
+		Then apply BFS and whenever we find a -1 neighbor we replace it with the current_pair_value+1.
+		We dont need a visited array in this coz, we are only adding those positions in queue which are -1. 
+
+		InQueue: 0,0|0,1|0,2|1,0|1,2
+
+class Solution {
+    static class Pair{
+        int x;
+        int y;
+        
+        Pair(int x, int y){
+            this.x=x;
+            this.y=y;
+        }
+    }
+    
+    int[][] dirs = {{0,1},
+                    {1,0},
+                    {0,-1},
+                    {-1,0}};
+    public int[][] updateMatrix(int[][] mat) {
+        ArrayDeque<Pair> q = new ArrayDeque<>();
+        
+        for(int i=0;i<mat.length;i++){
+            for(int j=0;j<mat[0].length;j++){
+                if(mat[i][j]==0){
+                    q.add(new Pair(i,j));
+                }
+                else{
+                    mat[i][j]=-1;
+                }
+            }
+        }
+        
+        while(q.isEmpty()==false){
+            // r m* w a*
+            
+            Pair rem = q.remove();
+            
+            for(int i=0; i<4;i++){
+                int rowdash = rem.x + dirs[i][0];
+                int coldash = rem.y + dirs[i][1];
+                
+                if(rowdash>=0 && coldash>=0 && rowdash<mat.length && coldash<mat[0].length && 
+                  mat[rowdash][coldash]<0){
+                    mat[rowdash][coldash]=mat[rem.x][rem.y]+1;
+                    q.add(new Pair(rowdash,coldash));
+                }
+                
+
+		//I could have written like below but it takes a lot of time and was giving TLE on LC.
+		// because in this case recursive call is making and then return which is talking more time.
+		if(rowdash<0 || coldash<0 || rowdash>=mat.length || coldash>=mat[0].length || mat[rowdash][coldash]==0){
+			continue;
+		}
+                
+            }
+        }
+        
+        return mat;
+    }
+}
