@@ -1,0 +1,96 @@
+Leetcode934 Shortest Bridge (https://leetcode.com/problems/shortest-bridge/)
+
+Ques: You are given an n x n binary matrix grid where 1 represents land and 0 represents water. An island is a 
+      4-directionally connected group of 1's not connected to any other 1's. There are exactly two islands in
+      grid. You may change 0's to 1's to connect the two islands to form one island. Return the smallest number
+      of 0's you must flip to connect the two islands.
+
+      Input: grid = [[1 1 0 0 1] from first 2 it will take 2 converts. 
+      		     [1 1 0 0 1]
+		     [1 1 0 0 0]] if we convert 0 to 1 from here, it will take 3 converts to join 2 islands
+      Output: 2                    
+
+Soln:  Idea is to Just find one island then add all of its 1's position to a queue and then run a BFS. In 
+	BFS convert 0 to 1 till we find another 1 that is another island. and then return the level. 
+	Note: This soln is giving TLE as of now.
+
+import java.util.ArrayDeque;
+import java.util.Queue;
+
+class Solution {
+    static class Pair {
+        int row;
+        int col;
+
+        Pair(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+    }
+
+    static int[][] dirs = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+    public void dfs(int[][] grid, int i, int j, boolean[][] visited, Queue<Pair> q) {
+        visited[i][j] = true;
+        q.add(new Pair(i, j));
+
+        for (int v = 0; v < 4; v++) {
+            int rowdash = i + dirs[v][0];
+            int coldash = j + dirs[v][1];
+
+            if (rowdash >= 0 && coldash >= 0 && rowdash < grid.length && coldash < grid[0].length &&
+                    grid[rowdash][coldash] == 1 && !visited[rowdash][coldash]) {
+
+                dfs(grid, rowdash, coldash, visited, q);
+            }
+        }
+    }
+
+    public int shortestBridge(int[][] grid) {
+        int n = grid.length;
+
+        boolean[][] visited = new boolean[n][n];
+        boolean foundIsland = false;
+        Queue<Pair> q = new ArrayDeque<>();
+
+        for (int i = 0; i < n && !foundIsland; i++) {
+            for (int j = 0; j < n && !foundIsland; j++) {
+                if (grid[i][j] == 1) {
+                    dfs(grid, i, j, visited, q);
+                    foundIsland = true;
+                }
+            }
+        }
+
+       
+        int steps = -1;
+
+        while (!q.isEmpty()) {
+            int size = q.size();
+            steps++;
+            for (int i = 0; i < size; i++) {
+                Pair current = q.poll();
+
+                for (int v = 0; v < 4; v++) {
+                    int rowdash = current.row + dirs[v][0];
+                    int coldash = current.col + dirs[v][1];
+
+                    if (rowdash >= 0 && coldash >= 0 && rowdash < n && coldash < n &&
+                            !visited[rowdash][coldash]) {
+
+                        if (grid[rowdash][coldash] == 1) {
+                            return steps;
+                        }
+
+                        q.add(new Pair(rowdash, coldash));
+                        visited[rowdash][coldash] = true;
+                    }
+                }
+            }
+
+        }
+
+        return -1; // Should not reach here
+    }
+}
+

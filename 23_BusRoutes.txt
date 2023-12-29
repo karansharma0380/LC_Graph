@@ -1,0 +1,127 @@
+Leetcode815 Bus Routes (https://leetcode.com/problems/bus-routes/)
+
+Ques: You are given an array routes representing bus routes where routes[i] is a bus route that the ith bus
+      repeats forever. For example, if routes[0] = [1, 5, 7], this means that the 0th bus travels in the 
+      sequence 1 -> 5 -> 7 -> 1 -> 5 -> 7 -> 1 -> ... forever. 
+      You will start at the bus stop source (You are not on any bus initially), and you want to go to the bus
+      stop target. You can travel between bus stops by buses only. Return the least number of buses you must 
+      take to travel from source to target. Return -1 if it is not possible.
+
+      Input: routes = [[1,2,7],[3,6,7]], source = 1, target = 6
+      Output: 2
+      Explanation: The best strategy is take the first bus to the bus stop 7, then take the second bus to the 
+                   bus stop 6.
+
+      Input: routes = [[7,12],[4,5,15],[6],[15,19],[9,12,13]], source = 15, target = 12
+      Output: -1
+
+Soln: Also, Suppose we have
+
+Bus Number           0       1       2       3
+Bus Stop No.	[ [1,2,3] [1,4,5] [5,8,7] [3,6,7] ]
+ 
+ 		     0th bus
+		1 ----> 2 ----> 3  [3 to 1 again]     Find min no. of buses to go from src to target. 
+		|               |
+	       \|/             \|/
+     1st bus	4               6  3rd bus           [source 1 to target 7]
+		|               |
+	       \|/             \|/
+[5 to 1 again]	5 ----> 8 ----> 7 [7 to 3 again]
+                     2nd bus
+	             [7 to 5 again]               
+
+  Suppose we want to find shortest path in terms of edges from 1 to 7. Then we can just do BFS and we can get 4
+  as an answer. 
+  In this question, we want to reach the target with min no of buses. So, suppose we are at '1'. Bus stop num 1
+  is a stop of 0th and 1st bus, so in queue we want to add all the bus stops of 0th bus and 1st bus. Why? 
+  because from stop 1 the cost of travelling to stop2 and stop3 is same coz of 0th bus, i.e. on the same level.
+  Similarly, from stop 1 the cost of travelling to stop4 and stop5 is same coz of 1st bus. 
+
+  So we need a modified BFS in this question like below...
+                 _______________________________
+  		|1,0| remove |2,1|3,1|4,1|5,1   We want to achieve something like this. 
+	
+  What we have 
+                    0        1        2        3       Bus Numbers
+	        [[1,2,3], [1,4,5], [5,8,7], [3,6,7]]   Bus Stop Numbers
+
+   But we dont have info of what all buses are passing through a specific stop. like from bus stop num 1-> 0 & 1
+   buses passes. 
+
+                            (BusStopNum)   BusNum
+   So will create a hashmap  Integer to ArrayList
+                      1 -> 0,1
+		      2 -> 0
+		      3 -> 0,3
+		      4 -> 1
+		      5 -> 1,2
+		      8 -> 2
+		      7 -> 2,3
+		      6 -> 3
+
+    
+
+class Solution {
+    public int numBusesToDestination(int[][] routes, int source, int target) {
+        int n = routes.length;
+
+        HashMap<Integer, HashSet<Integer>> map = new HashMap<>();
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < routes[i].length; j++) {
+                int busStopNo = routes[i][j];
+                HashSet<Integer> busNumbers = map.getOrDefault(busStopNo, new HashSet<Integer>());
+                busNumbers.add(i);
+                map.put(busStopNo, busNumbers);
+            }
+        }
+
+        ArrayDeque<Integer> q = new ArrayDeque<>();
+        HashSet<Integer> busStopVisited = new HashSet<>();
+        HashSet<Integer> busVisited = new HashSet<>();
+
+        int level = 0;
+
+        q.add(source);
+        busStopVisited.add(source);
+
+        while (!q.isEmpty()) {
+            int size = q.size();
+
+            while (size-- > 0) {
+                int currentStop = q.remove();
+
+                if (currentStop == target) {
+                    return level;
+                }
+
+                // Check if the bus stop is present in the map
+                if (map.containsKey(currentStop)) {
+                    HashSet<Integer> buses = map.get(currentStop);
+                    for (int bus : buses) {
+                        if (busVisited.contains(bus)) {
+                            continue;
+                        }
+
+                        int[] busRoute = routes[bus];
+                        for (int nextStop : busRoute) {
+                            if (busStopVisited.contains(nextStop)) {
+                                continue;
+                            }
+                            q.add(nextStop);
+                            busStopVisited.add(nextStop);
+                        }
+                        busVisited.add(bus);
+                    }
+                }
+            }
+            level++;
+        }
+
+        return -1;
+    }
+}
+
+
+

@@ -1,0 +1,82 @@
+Ques: Kahn Algorithm(Iterative Topological Sorting)
+Topo. Sort -> linear ordering of a Directed graph. In uv u should come before v
+Course Schedule Question. 
+
+There are total of n courses labelled from 0 to n-1.
+Some courses may have prerequisites, you have been given m pairs (ai,bi), where 1 pair means you must take the course
+bi before the course ai.
+Given the total num of courses numCourses and a list of prerequisite pairs, return the ordering of courses you should 
+take to finish all courses. If it is impossible  to finish all courses print -1.
+
+We have to make the DAG from the input. 
+
+Soln: In topological sort the vertex on top or at the start is that vertex who's indegree is 0. This concept was used 
+      by the Kahn. 
+      Suppose we have the graph, 
+      		0-----> 2 <------1        make an array of indegree    0 1 2 3 4 5
+		|                |                                    |0|0|2|1|1|2|
+		|                |          
+	       \|/              \|/  
+	        3-----> 4 ------>5 
+
+		Then make a queue and add those vertices which has indegree 0. 
+                                   |0|1|
+	And when you remove the vertex from queue, print it and then -1 the indegree from its neighbour in the array,
+	whichever idegree is 0 add it to the queue. And repeat the process. 
+	
+	But the catch is whatif all the vertices are not covered. Like queue is empty but there are still some
+	vertices which has indegree >0. So to avoid this, make a count variable and whenever we print count++.
+
+	And at the end check if(count==vtces) then we are good but if not means it is not a DAG. it's either DCG or not
+	a directed graph. 
+	We can use this concept for check for a graph is a DAG or not. 
+
+	So to my understanding strong. 
+	           0<----3
+		   |    /|\
+		   |     |    we cannot find a vertex with idegree 0. 
+		  \|/    |
+		   1---->2
+
+  Soln: 
+
+  public static int[] findOrder(int n, ArrayList<ArrayList<Integer>> graph){
+	int[] indegree = new int[n];
+	int[] ans = new int[n];
+
+	for(int i=0;i<n;i++){
+		for(int nbrs: graph.get(i)){ // Adding neighbours of every node. 
+			indegree[nbrs]++;
+		}
+	}
+
+	Queue<Integer> q  = new ArrayDeque<>();
+	for(int i=0;i<n;i++){
+		if(indegree[i]==0){
+			q.add(i);
+		}
+	}
+
+	int idx=0;  // for inserting ans in the ans[]
+	while(q.isEmtpy()==false){
+		int rem = q.remove();
+
+		ans[idx]=rem;
+		idx++;
+
+		for(int nbrs: graph.get(rem)){
+			indegree[nbrs]--;
+
+			if(indegree[nbrs]==0){
+				q.add(nbrs);
+			}
+		}
+	}
+
+	if(idx==n){
+		return ans;
+	}
+	else{
+		new int[][-1];
+	}
+  }
